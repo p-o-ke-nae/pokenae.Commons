@@ -9,7 +9,7 @@
 		<Version>1.0.0</Version>
 		<Authors>oza</Authors>
 		<Company>pokenae</Company>
-		<Description>pokenae共通ライブラリ</Description>
+		<Description>pokenae共通ライブラリプロジェクト</Description>
 		<PackageTags>BaseEntity, Common, Library</PackageTags>
 	</PropertyGroup>
 
