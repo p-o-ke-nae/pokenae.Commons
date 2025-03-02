@@ -42,4 +42,4 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          rsync -avz -e "ssh -i private_key -p 8022" ./nupkg/*.nupkg $USERNAME@$HOST:/path/to/pokenaeNugetPackage
+          rsync -avz -e "ssh -i private_key -p 8022" ./nupkg/*.nupkg $USERNAME@$HOST:/public_html/ozaroom.com/pokenaeNugetPackage
