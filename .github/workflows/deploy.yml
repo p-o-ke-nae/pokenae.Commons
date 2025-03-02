@@ -1,9 +1,9 @@
-name: Deploy to ConoHa VPS
+name: Deploy NuGet Package to ConoHa WING
 
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          submodules: true
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
@@ -36,7 +34,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -p 22 $HOST >> ~/.ssh/known_hosts
 
-      - name: Create deployment directory
+      - name: Deploy to ConoHa WING
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.HOST }}
@@ -44,14 +42,4 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          ssh $USERNAME@$HOST -i private_key -p 22 "mkdir -p pokenaeNugetPackage"
-
-      - name: Deploy to ConoHa VPS
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.USERNAME }}
-        run: |
-          echo "$SSH_PRIVATE_KEY" > private_key
-          chmod 600 private_key
-          rsync -avz -e "ssh -i private_key -p 22" ./nupkg/*.nupkg $USERNAME@$HOST:pokenaeNugetPackage
+          rsync -avz -e "ssh -i private_key -p 22" ./nupkg/*.nupkg $USERNAME@$HOST:/path/to/pokenaeNugetPackage
