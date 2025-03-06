@@ -24,13 +24,15 @@ jobs:
     - name: Increment version
       id: increment_version
       run: |
-        VERSION_FILE="Directory.Build.props"
-        VERSION_PREFIX=$(grep -oP '(?<=<VersionPrefix>)[^<]+' $VERSION_FILE)
-        VERSION_SUFFIX=$(grep -oP '(?<=<VersionSuffix>)[^<]+' $VERSION_FILE)
-        NEW_VERSION_SUFFIX=$((VERSION_SUFFIX + 1))
-        sed -i "s/<VersionSuffix>$VERSION_SUFFIX<\/VersionSuffix>/<VersionSuffix>$NEW_VERSION_SUFFIX<\/VersionSuffix>/" $VERSION_FILE
-        echo "New version: $VERSION_PREFIX.$NEW_VERSION_SUFFIX"
-        echo "new_version=$VERSION_PREFIX.$NEW_VERSION_SUFFIX" >> $GITHUB_ENV
+        PROJECT_FILE=$(find . -name '*.csproj' | head -n 1)
+        VERSION_LINE=$(grep '<Version>' $PROJECT_FILE)
+        VERSION=$(echo $VERSION_LINE | sed -E 's/.*<Version>([0-9]+\.[0-9]+\.[0-9]+)<\/Version>.*/\1/')
+        IFS='.' read -r -a VERSION_PARTS <<< "$VERSION"
+        VERSION_PARTS[2]=$((VERSION_PARTS[2] + 1))
+        NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.${VERSION_PARTS[2]}"
+        sed -i "s/<Version>$VERSION<\/Version>/<Version>$NEW_VERSION<\/Version>/" $PROJECT_FILE
+        echo "New version: $NEW_VERSION"
+        echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
 
     - name: Build project
       run: dotnet build --configuration Release
@@ -47,6 +49,6 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add Directory.Build.props
+        git add $(find . -name '*.csproj')
         git commit -m "Increment version to ${{ env.new_version }}"
         git push
