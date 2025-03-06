@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>pokenae.Commons</PackageId>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 		<Authors>oza</Authors>
 		<Company>pokenae</Company>
 		<Description>pokenae共通ライブラリプロジェクト</Description>
