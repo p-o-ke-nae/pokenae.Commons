@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Routing;
 
 namespace pokenae.Commons.Data
 {
@@ -15,11 +16,20 @@ namespace pokenae.Commons.Data
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="options">データベースコンテキストのオプション</param>
+        /// <param name="httpContextAccessor">HTTPコンテキストアクセサ</param>
         public ApplicationDbContext(DbContextOptions<TContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
+        /// <summary>
+        /// モデルの作成時に呼び出されるメソッド
+        /// </summary>
+        /// <param name="modelBuilder">モデルビルダー</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -34,6 +44,11 @@ namespace pokenae.Commons.Data
             }
         }
 
+        /// <summary>
+        /// 論理削除のフィルタリング条件を取得するメソッド
+        /// </summary>
+        /// <param name="type">エンティティの型</param>
+        /// <returns>論理削除のフィルタリング条件</returns>
         private static LambdaExpression GetIsDeletedRestriction(Type type)
         {
             var param = Expression.Parameter(type, "e");
@@ -43,10 +58,16 @@ namespace pokenae.Commons.Data
             return lambda;
         }
 
+        /// <summary>
+        /// 変更を保存するメソッド
+        /// </summary>
+        /// <returns>保存されたエンティティの数</returns>
         public override int SaveChanges()
         {
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "system";
-            var programId = "Unknown"; // ここは適宜変更してください
+            var controllerName = _httpContextAccessor.HttpContext?.GetRouteData()?.Values["controller"]?.ToString() ?? "UnknownController";
+            var actionName = _httpContextAccessor.HttpContext?.GetRouteData()?.Values["action"]?.ToString() ?? "UnknownAction";
+            var programId = $"{controllerName}-{actionName}";
 
             foreach (var entry in ChangeTracker.Entries<BaseEntity>())
             {

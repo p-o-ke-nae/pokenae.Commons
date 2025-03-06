@@ -1,4 +1,4 @@
-name: Deploy NuGet Package to ConoHa WING
+name: Publish NuGet Package
 
 on:
   push:
@@ -6,40 +6,47 @@ on:
       - master
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '8.0.x'
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Build project
-        run: dotnet build --configuration Release --no-restore
+    - name: Increment version
+      id: increment_version
+      run: |
+        VERSION_FILE="Directory.Build.props"
+        VERSION_PREFIX=$(grep -oP '(?<=<VersionPrefix>)[^<]+' $VERSION_FILE)
+        VERSION_SUFFIX=$(grep -oP '(?<=<VersionSuffix>)[^<]+' $VERSION_FILE)
+        NEW_VERSION_SUFFIX=$((VERSION_SUFFIX + 1))
+        sed -i "s/<VersionSuffix>$VERSION_SUFFIX<\/VersionSuffix>/<VersionSuffix>$NEW_VERSION_SUFFIX<\/VersionSuffix>/" $VERSION_FILE
+        echo "New version: $VERSION_PREFIX.$NEW_VERSION_SUFFIX"
+        echo "new_version=$VERSION_PREFIX.$NEW_VERSION_SUFFIX" >> $GITHUB_ENV
 
-      - name: Pack project
-        run: dotnet pack --configuration Release --no-build --output ./nupkg
+    - name: Build project
+      run: dotnet build --configuration Release
 
-      - name: Create .ssh directory and add known hosts
-        env:
-          HOST: ${{ secrets.HOST }}
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -p 8022 $HOST >> ~/.ssh/known_hosts
+    - name: Pack project
+      run: dotnet pack --configuration Release --output ./nupkg
 
-      - name: Deploy to ConoHa WING
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.USERNAME }}
-        run: |
-          echo "$SSH_PRIVATE_KEY" > private_key
-          chmod 600 private_key
-          rsync -avz -e "ssh -i private_key -p 8022" ./nupkg/*.nupkg $USERNAME@$HOST:/apokenaeNugetPackage
+    - name: Publish to NuGet
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push ./nupkg/*.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+
+    - name: Commit version increment
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add Directory.Build.props
+        git commit -m "Increment version to ${{ env.new_version }}"
+        git push
