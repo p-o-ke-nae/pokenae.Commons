@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Routing;
 using System.ComponentModel.DataAnnotations;
+using pokenae.Commons.Exceptions;
 
 namespace pokenae.Commons.Data
 {
@@ -96,19 +97,22 @@ namespace pokenae.Commons.Data
                     }
                     catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)
                     {
-                        // 同一キーのエンティティが存在する場合、論理削除されたエンティティを復活させる
-                        entry.State = EntityState.Modified;
-                        entry.Entity.DeletedAt = null;
-                        entry.Entity.DeletedBy = null;
-                        entry.Entity.DeletedProgramId = null;
-                        entry.Entity.UpdatedAt = DateTime.UtcNow;
-                        entry.Entity.UpdatedBy = userId;
-                        entry.Entity.UpdatedProgramId = programId;
-                        base.SaveChanges();
+                        throw new DuplicateKeyException("An entity with the same key already exists.");
                     }
                 }
                 else if (entry.State == EntityState.Modified)
                 {
+                    // バージョンチェック
+                    var databaseValues = entry.GetDatabaseValues();
+                    if (databaseValues != null)
+                    {
+                        var databaseVersion = (int?)databaseValues["Version"];
+                        if (databaseVersion.HasValue && entry.Entity.Version != databaseVersion.Value)
+                        {
+                            throw new ConcurrencyException("The entity you are trying to update has been modified by another user.");
+                        }
+                    }
+
                     entry.Entity.UpdatedAt = DateTime.UtcNow;
                     entry.Entity.UpdatedBy = userId;
                     entry.Entity.UpdatedProgramId = programId;

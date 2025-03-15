@@ -8,7 +8,7 @@ namespace pokenae.Commons.Repositories
     /// 共通のリポジトリインターフェース
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public interface IRepository<T> where T : BaseEntity
+    public interface IEntityRepository<T> where T : BaseEntity
     {
         /// <summary>
         /// 特定の条件に一致するエンティティを取得
@@ -45,7 +45,7 @@ namespace pokenae.Commons.Repositories
         /// エンティティをアップサート（存在しない場合は追加し、存在する場合は更新）
         /// </summary>
         /// <param name="entity">エンティティ</param>
-        void Upsert(T entity);
+        void Upsert(T entity, Func<T, bool> predicate);
 
         /// <summary>
         /// 論理削除されたエンティティを含めて全てのエンティティを取得
@@ -65,7 +65,7 @@ namespace pokenae.Commons.Repositories
         /// </summary>
         /// <param name="predicate">条件</param>
         /// <returns>存在する場合は true、それ以外は false</returns>
-        bool Exists(Func<T, bool> predicate);
+        bool IsExists(Func<T, bool> predicate);
 
         /// <summary>
         /// 複数のエンティティを一度に追加
