@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using pokenae.Commons.Models;
+using pokenae.Commons.Entities;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Routing;
+using System.ComponentModel.DataAnnotations;
 
 namespace pokenae.Commons.Data
 {
@@ -59,6 +60,16 @@ namespace pokenae.Commons.Data
         }
 
         /// <summary>
+        /// 物理削除を行うメソッド
+        /// </summary>
+        /// <param name="entity">削除するエンティティ</param>
+        public void HardDelete<TEntity>(TEntity entity) where TEntity : BaseEntity
+        {
+            Set<TEntity>().Remove(entity);
+            SaveChanges();
+        }
+
+        /// <summary>
         /// 変更を保存するメソッド
         /// </summary>
         /// <returns>保存されたエンティティの数</returns>
@@ -73,12 +84,28 @@ namespace pokenae.Commons.Data
             {
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedAt = DateTime.UtcNow;
-                    entry.Entity.CreatedBy = userId;
-                    entry.Entity.CreatedProgramId = programId;
-                    entry.Entity.UpdatedAt = DateTime.UtcNow;
-                    entry.Entity.UpdatedBy = userId;
-                    entry.Entity.UpdatedProgramId = programId;
+                    try
+                    {
+                        entry.Entity.CreatedAt = DateTime.UtcNow;
+                        entry.Entity.CreatedBy = userId;
+                        entry.Entity.CreatedProgramId = programId;
+                        entry.Entity.UpdatedAt = DateTime.UtcNow;
+                        entry.Entity.UpdatedBy = userId;
+                        entry.Entity.UpdatedProgramId = programId;
+                        base.SaveChanges();
+                    }
+                    catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)
+                    {
+                        // 同一キーのエンティティが存在する場合、論理削除されたエンティティを復活させる
+                        entry.State = EntityState.Modified;
+                        entry.Entity.DeletedAt = null;
+                        entry.Entity.DeletedBy = null;
+                        entry.Entity.DeletedProgramId = null;
+                        entry.Entity.UpdatedAt = DateTime.UtcNow;
+                        entry.Entity.UpdatedBy = userId;
+                        entry.Entity.UpdatedProgramId = programId;
+                        base.SaveChanges();
+                    }
                 }
                 else if (entry.State == EntityState.Modified)
                 {

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace pokenae.Commons.Models
+namespace pokenae.Commons.Entities
 {
     /// <summary>
     /// 共通フィールドを持つ基底クラス
