@@ -18,7 +18,15 @@
 3. **名前空間のインポート**:
    - `pokenae.Commons`プロジェクトのクラスやインターフェースを使用するために、必要な名前空間をインポートします。例えば、以下のようにインポートします。
 
-
+   using pokenae.Commons.Filters;
+   using pokenae.Commons.Data;
+   using pokenae.Commons.DTOs;
+   using pokenae.Commons.Entities;
+   using pokenae.Commons.Mappings;
+   using pokenae.Commons.Repositories;
+   using pokenae.Commons.Repositories.impl;
+   using pokenae.Commons.Services.Application;
+   using pokenae.Commons.Services.Application.impl;
 
 
 ## 使用目的と意図
@@ -29,7 +37,7 @@
 
 ### `pokenae.Commons.Filters.ApiAccessFilter`
 
-`ApiAccessFilter`は、APIアクセス権限をチェックするフィルタです。特定のAPIエンドポイントにアクセスする前に、アクセス権限を確認します。
+`ApiAccessFilter`は、ポケなえが管理するAPIに対してアクセス権限をチェックするフィルタです。特定のAPIエンドポイントにアクセスする前に、アクセス権限を確認します。
 
 ### `pokenae.Commons.Data.ApplicationDbContext`
 
@@ -121,9 +129,11 @@ public YourDto GetEntity(Guid id)
 `IEntityRepository`を拡張するには、新しいメソッドをインターフェースに追加します。
 
 
-public interface IEntityRepository<T> where T : BaseEntity { // 既存のメソッド
-// 新しいメソッド
-Task<T> FindAsync(Func<T, bool> predicate);
+public interface IEntityRepository<T> where T : BaseEntity 
+{ 
+    // 既存のメソッド
+    // 新しいメソッド
+    Task<T> FindAsync(Func<T, bool> predicate);
 }
 
 
@@ -132,11 +142,13 @@ Task<T> FindAsync(Func<T, bool> predicate);
 `EntityRepository`を拡張するには、`IEntityRepository`で定義した新しいメソッドを実装します。
 
 
-public class EntityRepository<T> : IEntityRepository<T> where T : BaseEntity { // 既存のメソッド
-public async Task<T> FindAsync(Func<T, bool> predicate)
-{
-    return await Task.Run(() => _context.Set<T>().FirstOrDefault(predicate));
-}
+public class EntityRepository<T> : IEntityRepository<T> where T : BaseEntity 
+{ 
+    // 既存のメソッド
+    public async Task<T> FindAsync(Func<T, bool> predicate)
+    {
+        return await Task.Run(() => _context.Set<T>().FirstOrDefault(predicate));
+    }
 }
 
 
@@ -145,9 +157,11 @@ public async Task<T> FindAsync(Func<T, bool> predicate)
 `IEntityService`を拡張するには、新しいメソッドをインターフェースに追加します。
 
 
-public interface IEntityService<T> where T : BaseEntity { // 既存のメソッド
-// 新しいメソッド
-Task<T> FindAsync(Func<T, bool> predicate);
+public interface IEntityService<T> where T : BaseEntity 
+{ 
+    // 既存のメソッド
+    // 新しいメソッド
+    Task<T> FindAsync(Func<T, bool> predicate);
 }
 
 
@@ -156,11 +170,13 @@ Task<T> FindAsync(Func<T, bool> predicate);
 `EntityService`を拡張するには、`IEntityService`で定義した新しいメソッドを実装します。
 
 
-public class EntityService<T> : IEntityService<T> where T : BaseEntity { // 既存のメソッド
-public async Task<T> FindAsync(Func<T, bool> predicate)
-{
-    return await repository.FindAsync(predicate);
-}
+public class EntityService<T> : IEntityService<T> where T : BaseEntity 
+{ 
+    // 既存のメソッド
+    public async Task<T> FindAsync(Func<T, bool> predicate)
+    {
+        return await repository.FindAsync(predicate);
+    }
 }
 
 
@@ -169,7 +185,13 @@ public async Task<T> FindAsync(Func<T, bool> predicate)
 `BaseMappingProfile`を拡張するには、新しいマッピング設定を追加します。
 
 
-public class CustomMappingProfile : BaseMappingProfile { public CustomMappingProfile() { CreateMap<YourEntity, YourDto>(); CreateMap<YourDto, YourEntity>(); } }
+public class CustomMappingProfile : BaseMappingProfile 
+{ 
+    public CustomMappingProfile() 
+    { 
+        CreateMap<YourEntity, YourDto>(); CreateMap<YourDto, YourEntity>(); 
+    } 
+}
 
 
 ## まとめ

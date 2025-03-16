@@ -23,7 +23,7 @@ namespace pokenae.Commons.Controllers
             _logApiUrl = $"{apiBaseUrl}{logUrl}";
         }
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public async Task OnActionExecutionAsync([FromQuery] ActionExecutingContext context, [FromQuery] ActionExecutionDelegate next)
         {
             var accessToken = context.HttpContext.Request.Query["accessToken"].ToString();
             var apiUrl = context.HttpContext.Request.Path;

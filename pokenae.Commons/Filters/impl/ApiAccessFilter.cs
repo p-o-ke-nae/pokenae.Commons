@@ -22,7 +22,7 @@ namespace pokenae.Commons.Filters
             _apiAccessUrl = $"{apiBaseUrl}{accessUrl}";
         }
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public async Task OnActionExecutionAsync([FromQuery] ActionExecutingContext context, [FromQuery] ActionExecutionDelegate next)
         {
             if (context.HttpContext.Request.Query.TryGetValue("accessToken", out var accessToken) &&
                 context.HttpContext.Request.Query.TryGetValue("apiUrl", out var apiUrl))
