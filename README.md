@@ -23,7 +23,7 @@
 
 ## 使用目的と意図
 
-### `pokenae.UserManager.API.Controllers.BaseController`
+### `pokenae.Commons.Controllers.BaseController`
 
 `BaseController`は、共通のコントローラ機能を提供する抽象クラスです。APIアクセスのログ記録やエラーハンドリングなどの共通機能を実装しています。
 

@@ -5,7 +5,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace pokenae.UserManager.API.Controllers
+namespace pokenae.Commons.Controllers
 {
     /// <summary>
     /// ベースコントローラ
