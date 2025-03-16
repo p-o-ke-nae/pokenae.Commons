@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using pokenae.Commons.Entities;
 
 namespace pokenae.Commons.Repositories
@@ -8,7 +9,9 @@ namespace pokenae.Commons.Repositories
     /// 共通のリポジトリインターフェース
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public interface IEntityRepository<T> where T : BaseEntity
+    public interface IEntityRepository<T, TContext> 
+        where T : BaseEntity
+        where TContext : DbContext
     {
         /// <summary>
         /// 特定の条件に一致するエンティティを取得
