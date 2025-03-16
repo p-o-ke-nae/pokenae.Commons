@@ -12,16 +12,18 @@ namespace pokenae.Commons.Repositories.impl
     /// DBテーブルを使用する運営で使用する共通のリポジトリクラス
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public class EntityRepository<T> : IEntityRepository<T> where T : BaseEntity
+    public class EntityRepository<T, TContext> : IEntityRepository<T> 
+        where T : BaseEntity
+        where TContext : DbContext
     {
-        protected readonly ApplicationDbContext<DbContext> context;
+        protected readonly ApplicationDbContext<TContext> context;
         private IDbContextTransaction _transaction;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="context">データベースコンテキスト</param>
-        public EntityRepository(ApplicationDbContext<DbContext> context)
+        public EntityRepository(ApplicationDbContext<TContext> context)
         {
             this.context = context;
         }
