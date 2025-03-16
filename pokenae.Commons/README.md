@@ -31,9 +31,9 @@
 
 ## 使用目的と意図
 
-### `pokenae.Commons.Controllers.BaseController`
+### `pokenae.Commons.Filters.LoggingActionFilter`
 
-`BaseController`は、共通のコントローラ機能を提供する抽象クラスです。APIアクセスのログ記録やエラーハンドリングなどの共通機能を実装しています。
+`LoggingActionFilter`は、APIアクセスのログ記録を行うフィルタです。各アクションの実行前後にログを記録し、エラーハンドリングも行います。
 
 ### `pokenae.Commons.Filters.ApiAccessFilter`
 
@@ -72,6 +72,16 @@
 `ApplicationService`は、`IApplicationService`の実装クラスです。DTOを使用したビジネスロジックを実装します。
 
 ## 実際の使用例
+
+### `LoggingActionFilter`の使用例
+
+`LoggingActionFilter`をASP.NET Coreのフィルタとして使用する例を示します。
+
+public void ConfigureServices(IServiceCollection services) { services.AddHttpClient(); services.AddScoped<LoggingActionFilter>(); 
+services.AddControllers(options => 
+{ 
+    options.Filters.Add<LoggingActionFilter>(); 
+}); }
 
 ### `ApiAccessFilter`の使用例
 

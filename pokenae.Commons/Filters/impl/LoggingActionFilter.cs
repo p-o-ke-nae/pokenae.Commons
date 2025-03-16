@@ -1,21 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace pokenae.Commons.Controllers
+namespace pokenae.Commons.Filters
 {
-    /// <summary>
-    /// ベースコントローラ
-    /// </summary>
-    public abstract class BaseController : ControllerBase, IAsyncActionFilter
+    public class LoggingActionFilter : IAsyncActionFilter
     {
         private readonly HttpClient _httpClient;
         private readonly string _logApiUrl;
 
-        protected BaseController(HttpClient httpClient, IConfiguration configuration)
+        public LoggingActionFilter(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             var apiBaseUrl = configuration["pUM:BaseUrl"];
