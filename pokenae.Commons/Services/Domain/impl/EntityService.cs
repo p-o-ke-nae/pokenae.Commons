@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using pokenae.Commons.Attributes;
 using pokenae.Commons.Entities;
 using pokenae.Commons.Repositories;
@@ -6,11 +7,13 @@ using pokenae.Commons.Services.Domain;
 
 namespace pokenae.Commons.Services.Domain.impl
 {
-    public class EntityService<T> : IEntityService<T> where T : BaseEntity
+    public class EntityService<T, TContext> : IEntityService<T, TContext> 
+        where T : BaseEntity
+        where TContext : DbContext
     {
-        protected readonly IEntityRepository<T> repository;
+        protected readonly IEntityRepository<T, TContext> repository;
 
-        public EntityService(IEntityRepository<T> repository)
+        public EntityService(IEntityRepository<T, TContext> repository)
         {
             this.repository = repository;
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using pokenae.Commons.Entities;
 
 namespace pokenae.Commons.Services.Domain
@@ -7,7 +8,9 @@ namespace pokenae.Commons.Services.Domain
     /// エンティティに対する基本的な操作を提供するサービスインターフェース
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public interface IEntityService<T> where T : BaseEntity
+    public interface IEntityService<T, TContext> 
+        where T : BaseEntity
+        where TContext : DbContext
     {
         /// <summary>
         /// 指定された条件に一致するエンティティを検索します。

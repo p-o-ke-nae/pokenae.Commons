@@ -5,17 +5,19 @@ using AutoMapper;
 using pokenae.Commons.Services.Domain;
 using pokenae.Commons.Entities;
 using pokenae.Commons.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace pokenae.Commons.Services.Application.impl
 {
-    public abstract class ApplicationService<TEntity, TDto> : IApplicationService<TDto>
-            where TEntity : BaseEntity
-            where TDto : BaseDto
+    public abstract class ApplicationService<TEntity, TDto, TContext> : IApplicationService<TDto>
+        where TEntity : BaseEntity
+        where TDto : BaseDto
+        where TContext : DbContext
     {
-        protected readonly IEntityService<TEntity> entityService;
+        protected readonly IEntityService<TEntity, TContext> entityService;
         protected readonly IMapper mapper;
 
-        protected ApplicationService(IEntityService<TEntity> entityService, IMapper mapper)
+        protected ApplicationService(IEntityService<TEntity, TContext> entityService, IMapper mapper)
         {
             this.entityService = entityService;
             this.mapper = mapper;
