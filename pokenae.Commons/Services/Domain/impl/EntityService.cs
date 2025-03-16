@@ -7,13 +7,12 @@ using pokenae.Commons.Services.Domain;
 
 namespace pokenae.Commons.Services.Domain.impl
 {
-    public class EntityService<T, TContext> : IEntityService<T, TContext> 
+    public class EntityService<T> : IEntityService<T> 
         where T : BaseEntity
-        where TContext : DbContext
     {
-        protected readonly IEntityRepository<T, TContext> repository;
+        protected readonly IEntityRepository<T> repository;
 
-        public EntityService(IEntityRepository<T, TContext> repository)
+        public EntityService(IEntityRepository<T> repository)
         {
             this.repository = repository;
         }

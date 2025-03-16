@@ -8,9 +8,8 @@ namespace pokenae.Commons.Services.Domain
     /// エンティティに対する基本的な操作を提供するサービスインターフェース
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public interface IEntityService<T, TContext> 
+    public interface IEntityService<T> 
         where T : BaseEntity
-        where TContext : DbContext
     {
         /// <summary>
         /// 指定された条件に一致するエンティティを検索します。

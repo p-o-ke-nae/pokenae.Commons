@@ -12,7 +12,7 @@ namespace pokenae.Commons.Repositories.impl
     /// DBテーブルを使用する運営で使用する共通のリポジトリクラス
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public class EntityRepository<T, TContext> : IEntityRepository<T, TContext> 
+    public class EntityRepository<T, TContext> : IEntityRepository<T> 
         where T : BaseEntity
         where TContext : DbContext
     {

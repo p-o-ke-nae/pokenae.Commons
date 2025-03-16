@@ -9,9 +9,8 @@ namespace pokenae.Commons.Repositories
     /// 共通のリポジトリインターフェース
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public interface IEntityRepository<T, TContext> 
+    public interface IEntityRepository<T> 
         where T : BaseEntity
-        where TContext : DbContext
     {
         /// <summary>
         /// 特定の条件に一致するエンティティを取得
