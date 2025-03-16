@@ -9,7 +9,7 @@ namespace pokenae.Commons.Filters
     /// <summary>
     /// APIアクセス権限をチェックするフィルタの実装
     /// </summary>
-    public class ApiAccessFilter : IApiAccessFilter
+    public class ApiAccessFilter : IAsyncActionFilter
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiAccessUrl;
