@@ -113,6 +113,65 @@ public YourDto GetEntity(Guid id)
 }
 }
 
+
+## 拡張方法
+
+### `IEntityRepository`の拡張
+
+`IEntityRepository`を拡張するには、新しいメソッドをインターフェースに追加します。
+
+
+public interface IEntityRepository<T> where T : BaseEntity { // 既存のメソッド
+// 新しいメソッド
+Task<T> FindAsync(Func<T, bool> predicate);
+}
+
+
+### `EntityRepository`の拡張
+
+`EntityRepository`を拡張するには、`IEntityRepository`で定義した新しいメソッドを実装します。
+
+
+public class EntityRepository<T> : IEntityRepository<T> where T : BaseEntity { // 既存のメソッド
+public async Task<T> FindAsync(Func<T, bool> predicate)
+{
+    return await Task.Run(() => _context.Set<T>().FirstOrDefault(predicate));
+}
+}
+
+
+### `IEntityService`の拡張
+
+`IEntityService`を拡張するには、新しいメソッドをインターフェースに追加します。
+
+
+public interface IEntityService<T> where T : BaseEntity { // 既存のメソッド
+// 新しいメソッド
+Task<T> FindAsync(Func<T, bool> predicate);
+}
+
+
+### `EntityService`の拡張
+
+`EntityService`を拡張するには、`IEntityService`で定義した新しいメソッドを実装します。
+
+
+public class EntityService<T> : IEntityService<T> where T : BaseEntity { // 既存のメソッド
+public async Task<T> FindAsync(Func<T, bool> predicate)
+{
+    return await repository.FindAsync(predicate);
+}
+}
+
+
+### `BaseMappingProfile`の拡張
+
+`BaseMappingProfile`を拡張するには、新しいマッピング設定を追加します。
+
+
+public class CustomMappingProfile : BaseMappingProfile { public CustomMappingProfile() { CreateMap<YourEntity, YourDto>(); CreateMap<YourDto, YourEntity>(); } }
+
+
 ## まとめ
 
 `pokenae.Commons`プロジェクトは、共通の機能を提供することで、他のプロジェクトでのコードの再利用性を高め、開発効率を向上させることを目的としています。各クラスやインターフェースを適切に参照し、利用することで、共通のビジネスロジックやデータ操作を簡単に実装することができます。

@@ -12,6 +12,7 @@
 		<Description>pokenae共通ライブラリプロジェクト</Description>
 		<PackageTags>BaseEntity, Common, Library</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
