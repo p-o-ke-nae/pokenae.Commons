@@ -8,14 +8,14 @@ namespace pokenae.Commons.Services.Domain
     /// エンティティに対する基本的な操作を提供するサービスインターフェース
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public interface IEntityService<T> 
+    public interface IEntityService<T>
         where T : BaseEntity
     {
         /// <summary>
-        /// 指定された条件に一致するエンティティを検索します。
+        /// 指定された条件に一致するエンティティを取得します。
         /// </summary>
-        /// <param name="predicate">検索条件</param>
-        /// <returns>一致するエンティティ</returns>
+        /// <param name="predicate">検索条件を指定する関数</param>
+        /// <returns>条件に一致するエンティティ</returns>
         T Find(Func<T, bool> predicate);
 
         /// <summary>
@@ -46,43 +46,43 @@ namespace pokenae.Commons.Services.Domain
         /// エンティティを追加または更新します。
         /// </summary>
         /// <param name="entity">追加または更新するエンティティ</param>
-        /// <param name="predicate">検索条件</param>
+        /// <param name="predicate">検索条件を指定する関数</param>
         void Upsert(T entity, Func<T, bool> predicate);
 
         /// <summary>
-        /// 削除されたエンティティを含むすべてのエンティティを取得します。
+        /// 削除されたものを含むすべてのエンティティを取得します。
         /// </summary>
         /// <returns>エンティティのコレクション</returns>
         IEnumerable<T> GetAllIncludingDeleted();
 
         /// <summary>
-        /// 削除されたエンティティを含む、指定された条件に一致するエンティティを検索します。
+        /// 削除されたものを含む、指定された条件に一致するエンティティを取得します。
         /// </summary>
-        /// <param name="predicate">検索条件</param>
-        /// <returns>一致するエンティティ</returns>
+        /// <param name="predicate">検索条件を指定する関数</param>
+        /// <returns>条件に一致するエンティティ</returns>
         T FindIncludingDeleted(Func<T, bool> predicate);
 
         /// <summary>
-        /// 指定された条件に一致するエンティティが存在するかどうかを確認します。
+        /// 指定された条件に一致するエンティティが存在するか確認します。
         /// </summary>
-        /// <param name="predicate">検索条件</param>
-        /// <returns>エンティティが存在する場合は true、それ以外の場合は false</returns>
+        /// <param name="predicate">検索条件を指定する関数</param>
+        /// <returns>エンティティが存在する場合はtrue、それ以外の場合はfalse</returns>
         bool IsExists(Func<T, bool> predicate);
 
         /// <summary>
-        /// 複数のエンティティを追加します。
+        /// 複数のエンティティを一度に追加します。
         /// </summary>
         /// <param name="entities">追加するエンティティのコレクション</param>
         void AddRange(IEnumerable<T> entities);
 
         /// <summary>
-        /// 複数のエンティティを更新します。
+        /// 複数のエンティティを一度に更新します。
         /// </summary>
         /// <param name="entities">更新するエンティティのコレクション</param>
         void UpdateRange(IEnumerable<T> entities);
 
         /// <summary>
-        /// 複数のエンティティを削除します。
+        /// 複数のエンティティを一度に削除します。
         /// </summary>
         /// <param name="entities">削除するエンティティのコレクション</param>
         void DeleteRange(IEnumerable<T> entities);

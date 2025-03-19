@@ -1,32 +1,32 @@
 using System;
 
-namespace pokenae.Commons.DTOs
+namespace pokenae.Commons.DTOs.Application
 {
     /// <summary>
-    /// データ転送オブジェクトのベースクラス。
+    /// データ転送オブジェクトのベースクラス
     /// </summary>
-    public abstract class BaseDto
+    public abstract class ApplicationDto
     {
         /// <summary>
-        /// エンティティの一意識別子。
+        /// エンティティの一意識別子
         /// </summary>
         public Guid Id { get; set; }
 
         /// <summary>
-        /// エンティティの作成日時。
+        /// エンティティの作成日時
         /// </summary>
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// エンティティの最終更新日時。
+        /// エンティティの最終更新日時
         /// </summary>
         public DateTime UpdatedAt { get; set; }
 
         /// <summary>
-        /// コンストラクタ。
-        /// 新しいインスタンスを初期化します。
+        /// コンストラクタ
+        /// 新しいインスタンスを初期化します
         /// </summary>
-        protected BaseDto()
+        protected ApplicationDto()
         {
             Id = Guid.NewGuid();
             CreatedAt = DateTime.UtcNow;
@@ -34,9 +34,9 @@ namespace pokenae.Commons.DTOs
         }
 
         /// <summary>
-        /// 共通のバリデーションロジックを実行します。
+        /// 共通のバリデーションロジックを実行します
         /// </summary>
-        /// <exception cref="ArgumentException">Idが空の場合にスローされます。</exception>
+        /// <exception cref="ArgumentException">Idが空の場合にスローされます</exception>
         public virtual void Validate()
         {
             if (Id == Guid.Empty)

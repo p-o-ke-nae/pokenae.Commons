@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using pokenae.Commons.Entities;
+using pokenae.Commons.DTOs;
 
 namespace pokenae.Commons.Repositories
 {
@@ -9,8 +9,8 @@ namespace pokenae.Commons.Repositories
     /// 共通のリポジトリインターフェース
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public interface IEntityRepository<T> 
-        where T : BaseEntity
+    public interface IEntityRepository<T>
+        where T : InfrastructureDto
     {
         /// <summary>
         /// 特定の条件に一致するエンティティを取得
@@ -47,6 +47,7 @@ namespace pokenae.Commons.Repositories
         /// エンティティをアップサート（存在しない場合は追加し、存在する場合は更新）
         /// </summary>
         /// <param name="entity">エンティティ</param>
+        /// <param name="predicate">条件</param>
         void Upsert(T entity, Func<T, bool> predicate);
 
         /// <summary>

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using pokenae.Commons.Entities;
 using pokenae.Commons.Data;
+using pokenae.Commons.DTOs;
 
 namespace pokenae.Commons.Repositories.impl
 {
@@ -13,7 +13,7 @@ namespace pokenae.Commons.Repositories.impl
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
     public class EntityRepository<T, TContext> : IEntityRepository<T> 
-        where T : BaseEntity
+        where T : InfrastructureDto
         where TContext : DbContext
     {
         protected readonly ApplicationDbContext<TContext> context;

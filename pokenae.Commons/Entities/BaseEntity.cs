@@ -4,78 +4,64 @@ using System.ComponentModel.DataAnnotations;
 namespace pokenae.Commons.Entities
 {
     /// <summary>
-    /// 共通フィールドを持つ基底クラス
+    /// 基本的なエンティティの基底クラス
     /// </summary>
     public abstract class BaseEntity
     {
+        /// <summary>
+        /// エンティティの一意の識別子
+        /// </summary>
+        public Guid Id { get; private set; }
+
+        /// <summary>
+        /// エンティティの作成日時
+        /// </summary>
+        public DateTime CreatedAt { get; private set; }
+
+        /// <summary>
+        /// エンティティの更新日時
+        /// </summary>
+        public DateTime UpdatedAt { get; private set; }
+
         /// <summary>
         /// デフォルトコンストラクタ
         /// </summary>
         protected BaseEntity()
         {
-            CreatedBy = string.Empty;
-            CreatedProgramId = string.Empty;
-            UpdatedBy = string.Empty;
-            UpdatedProgramId = string.Empty;
-            DeletedBy = string.Empty;
-            DeletedProgramId = string.Empty;
+            Id = Guid.NewGuid();
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         /// <summary>
-        /// 作成者
+        /// エンティティの等価性を判断します。
         /// </summary>
-        [Required]
-        public string CreatedBy { get; set; }
+        /// <param name="obj">比較対象のオブジェクト</param>
+        /// <returns>等しい場合は true、それ以外の場合は false</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            var entity = (BaseEntity)obj;
+            return Id == entity.Id;
+        }
 
         /// <summary>
-        /// 作成日時
+        /// エンティティのハッシュコードを取得します。
         /// </summary>
-        [Required]
-        public DateTime CreatedAt { get; set; }
+        /// <returns>ハッシュコード</returns>
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
 
         /// <summary>
-        /// 作成プログラムID
+        /// エンティティの更新日時を現在の日時に更新します。
         /// </summary>
-        [Required]
-        public string CreatedProgramId { get; set; }
-
-        /// <summary>
-        /// 更新者
-        /// </summary>
-        [Required]
-        public string UpdatedBy { get; set; }
-
-        /// <summary>
-        /// 更新日時
-        /// </summary>
-        [Required]
-        public DateTime UpdatedAt { get; set; }
-
-        /// <summary>
-        /// 更新プログラムID
-        /// </summary>
-        [Required]
-        public string UpdatedProgramId { get; set; }
-
-        /// <summary>
-        /// 削除者
-        /// </summary>
-        public string? DeletedBy { get; set; }
-
-        /// <summary>
-        /// 削除日時
-        /// </summary>
-        public DateTime? DeletedAt { get; set; }
-
-        /// <summary>
-        /// 削除プログラムID
-        /// </summary>
-        public string? DeletedProgramId { get; set; }
-
-        /// <summary>
-        /// バージョン
-        /// </summary>
-        [ConcurrencyCheck]
-        public int Version { get; set; }
+        public void Update()
+        {
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

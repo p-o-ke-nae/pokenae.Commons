@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Routing;
 using System.ComponentModel.DataAnnotations;
 using pokenae.Commons.Exceptions;
+using pokenae.Commons.DTOs;
 
 namespace pokenae.Commons.Data
 {
@@ -81,7 +82,7 @@ namespace pokenae.Commons.Data
             var actionName = _httpContextAccessor.HttpContext?.GetRouteData()?.Values["action"]?.ToString() ?? "UnknownAction";
             var programId = $"{controllerName}-{actionName}";
 
-            foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+            foreach (var entry in ChangeTracker.Entries<InfrastructureDto>())
             {
                 if (entry.State == EntityState.Added)
                 {
@@ -94,6 +95,11 @@ namespace pokenae.Commons.Data
                         entry.Entity.UpdatedBy = userId;
                         entry.Entity.UpdatedProgramId = programId;
                         base.SaveChanges();
+
+                        //if (entry.Entity is MasterTableDto masterDto)
+                        //{
+                        //    MasterTableDto.AddToCache(masterDto.KeyPart1, masterDto.KeyPart2, masterDto);
+                        //}
                     }
                     catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)
                     {
@@ -117,6 +123,11 @@ namespace pokenae.Commons.Data
                     entry.Entity.UpdatedBy = userId;
                     entry.Entity.UpdatedProgramId = programId;
                     entry.Entity.Version++;
+
+                    //if (entry.Entity is MasterTableDto masterDto)
+                    //{
+                    //    MasterTableDto.AddToCache(masterDto.KeyPart1, masterDto.KeyPart2, masterDto);
+                    //}
                 }
                 else if (entry.State == EntityState.Deleted)
                 {
@@ -124,6 +135,11 @@ namespace pokenae.Commons.Data
                     entry.Entity.DeletedAt = DateTime.UtcNow;
                     entry.Entity.DeletedBy = userId;
                     entry.Entity.DeletedProgramId = programId;
+
+                    //if (entry.Entity is MasterTableDto masterDto)
+                    //{
+                    //    MasterTableDto.RemoveFromCache(masterDto.KeyPart1, masterDto.KeyPart2);
+                    //}
                 }
             }
 

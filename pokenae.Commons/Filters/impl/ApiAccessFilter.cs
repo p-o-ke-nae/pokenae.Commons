@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ namespace pokenae.Commons.Filters
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiAccessUrl;
+        public const string defaultAccessToken = "guest_access_token";
 
         public ApiAccessFilter(HttpClient httpClient, IConfiguration configuration)
         {
@@ -24,15 +26,21 @@ namespace pokenae.Commons.Filters
 
         public async Task OnActionExecutionAsync([FromQuery] ActionExecutingContext context, [FromQuery] ActionExecutionDelegate next)
         {
-            if (context.HttpContext.Request.Query.TryGetValue("accessToken", out var accessToken) &&
-                context.HttpContext.Request.Query.TryGetValue("apiUrl", out var apiUrl))
+            if (context.HttpContext.Request.Headers.TryGetValue("Host", out var apiUrl))
             {
-                var response = await _httpClient.GetAsync($"{_apiAccessUrl}?accessToken={accessToken}&apiUrl={apiUrl}");
-                if (response.IsSuccessStatusCode)
+                context.HttpContext.Request.Headers.TryGetValue("Authorization", out var accessToken);
+                var uriBuilder = new UriBuilder(_apiAccessUrl);
+                var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+                query["accessToken"] = string.IsNullOrWhiteSpace(accessToken) ? accessToken : defaultAccessToken;
+                query["apiUrl"] = apiUrl;
+                uriBuilder.Query = query.ToString();
+
+                var request = new HttpRequestMessage(HttpMethod.Get, uriBuilder.ToString());
+                HttpResponseMessage httpResponseMessage = await _httpClient.SendAsync(request);
+                if (httpResponseMessage.IsSuccessStatusCode)
                 {
-                    var jsonResponse = await response.Content.ReadAsStringAsync();
-                    dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
-                    if (result.CanAccess)
+                    var val = JsonConvert.DeserializeObject<CanAccess>(await httpResponseMessage.Content.ReadAsStringAsync());
+                    if (val != null && val.IsAllowed)
                     {
                         await next();
                         return;
@@ -40,7 +48,15 @@ namespace pokenae.Commons.Filters
                 }
             }
 
-            context.Result = new ForbidResult();
+            context.Result = new NotFoundResult();
         }
+    }
+
+    /// <summary>
+    /// レスポンス用クラス
+    /// </summary>
+    public class CanAccess
+    {
+        public bool IsAllowed { get; set; }
     }
 }
