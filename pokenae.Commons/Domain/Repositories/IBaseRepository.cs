@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using pokenae.Commons.DTOs;
+﻿using pokenae.Commons.Domain.DTOs;
 
-namespace pokenae.Commons.Repositories
+namespace pokenae.Commons.Domain.Repositories
 {
     /// <summary>
     /// 共通のリポジトリインターフェース
     /// </summary>
     /// <typeparam name="T">エンティティの型</typeparam>
-    public interface IEntityRepository<T>
+    public interface IBaseRepository<T>
         where T : InfrastructureDto
     {
         /// <summary>

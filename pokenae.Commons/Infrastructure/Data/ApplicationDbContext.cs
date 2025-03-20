@@ -1,16 +1,13 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using pokenae.Commons.Entities;
-using System;
-using System.Linq;
+using pokenae.Commons.Domain.DTOs;
+using pokenae.Commons.Domain.Entities;
+using pokenae.Commons.Exceptions;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Routing;
-using System.ComponentModel.DataAnnotations;
-using pokenae.Commons.Exceptions;
-using pokenae.Commons.DTOs;
 
-namespace pokenae.Commons.Data
+namespace pokenae.Commons.Infrastructure.Data
 {
     /// <summary>
     /// アプリケーションのデータベースコンテキスト
@@ -71,11 +68,18 @@ namespace pokenae.Commons.Data
             SaveChanges();
         }
 
-        /// <summary>
-        /// 変更を保存するメソッド
-        /// </summary>
-        /// <returns>保存されたエンティティの数</returns>
+
         public override int SaveChanges()
+        {
+            return SaveChangesAsync(false).GetAwaiter().GetResult();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return await SaveChangesAsync(true, cancellationToken);
+        }
+
+        private async Task<int> SaveChangesAsync(bool isAsync, CancellationToken cancellationToken = default)
         {
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "system";
             var controllerName = _httpContextAccessor.HttpContext?.GetRouteData()?.Values["controller"]?.ToString() ?? "UnknownController";
@@ -94,12 +98,15 @@ namespace pokenae.Commons.Data
                         entry.Entity.UpdatedAt = DateTime.UtcNow;
                         entry.Entity.UpdatedBy = userId;
                         entry.Entity.UpdatedProgramId = programId;
-                        base.SaveChanges();
 
-                        //if (entry.Entity is MasterTableDto masterDto)
-                        //{
-                        //    MasterTableDto.AddToCache(masterDto.KeyPart1, masterDto.KeyPart2, masterDto);
-                        //}
+                        if (isAsync)
+                        {
+                            await base.SaveChangesAsync(cancellationToken);
+                        }
+                        else
+                        {
+                            base.SaveChanges();
+                        }
                     }
                     catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("duplicate key") == true)
                     {
@@ -108,8 +115,7 @@ namespace pokenae.Commons.Data
                 }
                 else if (entry.State == EntityState.Modified)
                 {
-                    // バージョンチェック
-                    var databaseValues = entry.GetDatabaseValues();
+                    var databaseValues = isAsync ? await entry.GetDatabaseValuesAsync(cancellationToken) : entry.GetDatabaseValues();
                     if (databaseValues != null)
                     {
                         var databaseVersion = (int?)databaseValues["Version"];
@@ -123,11 +129,6 @@ namespace pokenae.Commons.Data
                     entry.Entity.UpdatedBy = userId;
                     entry.Entity.UpdatedProgramId = programId;
                     entry.Entity.Version++;
-
-                    //if (entry.Entity is MasterTableDto masterDto)
-                    //{
-                    //    MasterTableDto.AddToCache(masterDto.KeyPart1, masterDto.KeyPart2, masterDto);
-                    //}
                 }
                 else if (entry.State == EntityState.Deleted)
                 {
@@ -135,15 +136,10 @@ namespace pokenae.Commons.Data
                     entry.Entity.DeletedAt = DateTime.UtcNow;
                     entry.Entity.DeletedBy = userId;
                     entry.Entity.DeletedProgramId = programId;
-
-                    //if (entry.Entity is MasterTableDto masterDto)
-                    //{
-                    //    MasterTableDto.RemoveFromCache(masterDto.KeyPart1, masterDto.KeyPart2);
-                    //}
                 }
             }
 
-            return base.SaveChanges();
+            return isAsync ? await base.SaveChangesAsync(cancellationToken) : base.SaveChanges();
         }
     }
 }

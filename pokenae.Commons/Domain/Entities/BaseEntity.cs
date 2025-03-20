@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace pokenae.Commons.Entities
+namespace pokenae.Commons.Domain.Entities
 {
     /// <summary>
     /// 基本的なエンティティの基底クラス
@@ -34,7 +34,7 @@ namespace pokenae.Commons.Entities
         }
 
         /// <summary>
-        /// エンティティの等価性を判断します。
+        /// エンティティの等価性を判断します
         /// </summary>
         /// <param name="obj">比較対象のオブジェクト</param>
         /// <returns>等しい場合は true、それ以外の場合は false</returns>
@@ -48,7 +48,7 @@ namespace pokenae.Commons.Entities
         }
 
         /// <summary>
-        /// エンティティのハッシュコードを取得します。
+        /// エンティティのハッシュコードを取得します
         /// </summary>
         /// <returns>ハッシュコード</returns>
         public override int GetHashCode()
@@ -57,7 +57,7 @@ namespace pokenae.Commons.Entities
         }
 
         /// <summary>
-        /// エンティティの更新日時を現在の日時に更新します。
+        /// エンティティの更新日時を現在の日時に更新します
         /// </summary>
         public void Update()
         {

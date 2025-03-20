@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using pokenae.Commons.Entities;
+using pokenae.Commons.Domain.Entities;
 
-namespace pokenae.Commons.Services.Domain
+namespace pokenae.Commons.Domain.Services
 {
     /// <summary>
     /// エンティティに対する基本的な操作を提供するサービスインターフェース

@@ -1,10 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace pokenae.Commons.DTOs
+namespace pokenae.Commons.Domain.DTOs
 {
     /// <summary>
-    /// インフラストラクチャ層のDTOの基底クラス
+    /// インフラストラクチャ層からドメイン層にデータを転送するDTOの基底クラス
     /// </summary>
     public abstract class InfrastructureDto
     {

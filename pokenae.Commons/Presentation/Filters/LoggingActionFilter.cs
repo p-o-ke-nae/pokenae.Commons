@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace pokenae.Commons.Filters
+namespace pokenae.Commons.Presentation.Filters
 {
     public class LoggingActionFilter : IAsyncActionFilter
     {
@@ -23,33 +23,35 @@ namespace pokenae.Commons.Filters
 
         public async Task OnActionExecutionAsync([FromQuery] ActionExecutingContext context, [FromQuery] ActionExecutionDelegate next)
         {
-            var accessToken = context.HttpContext.Request.Query["accessToken"].ToString();
-            var apiUrl = context.HttpContext.Request.Path;
-            var controllerName = context.ActionDescriptor.RouteValues["controller"];
-            var actionName = context.ActionDescriptor.RouteValues["action"];
-            var parameters = context.HttpContext.Request.QueryString.ToString();
-
-            bool canAccess = false;
-            bool isError = false;
-            string? errorMessage = null;
-            string? response = null;
-
-            try
+            if (context.HttpContext.Request.Headers.TryGetValue("Host", out var apiUrl))
             {
-                var resultContext = await next();
+                context.HttpContext.Request.Headers.TryGetValue("Authorization", out var accessToken);
+                var controllerName = context.ActionDescriptor.RouteValues["controller"];
+                var actionName = context.ActionDescriptor.RouteValues["action"];
+                var parameters = context.HttpContext.Request.QueryString.ToString();
 
-                canAccess = resultContext.HttpContext.Response.StatusCode == 200;
-                response = resultContext.HttpContext.Response.StatusCode.ToString();
-            }
-            catch (Exception ex)
-            {
-                isError = true;
-                errorMessage = ex.Message;
-                response = "Error occurred during action execution";
-            }
-            finally
-            {
-                await LogToDatabaseAsync(accessToken, apiUrl, canAccess, isError, errorMessage, response, controllerName, actionName, parameters);
+                bool canAccess = false;
+                bool isError = false;
+                string? errorMessage = null;
+                string? response = null;
+
+                try
+                {
+                    var resultContext = await next();
+
+                    canAccess = resultContext.HttpContext.Response.StatusCode == 200;
+                    response = resultContext.HttpContext.Response.StatusCode.ToString();
+                }
+                catch (Exception ex)
+                {
+                    isError = true;
+                    errorMessage = ex.Message;
+                    response = "Error occurred during action execution";
+                }
+                finally
+                {
+                    await LogToDatabaseAsync(accessToken, apiUrl, canAccess, isError, errorMessage, response, controllerName, actionName, parameters);
+                }
             }
         }
 

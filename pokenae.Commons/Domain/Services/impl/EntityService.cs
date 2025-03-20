@@ -1,12 +1,11 @@
-using System.Collections.Generic;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using pokenae.Commons.Attributes;
-using pokenae.Commons.DTOs;
-using pokenae.Commons.Entities;
-using pokenae.Commons.Repositories;
+using pokenae.Commons.Domain.Attributes;
+using pokenae.Commons.Domain.DTOs;
+using pokenae.Commons.Domain.Entities;
+using pokenae.Commons.Domain.Repositories;
+using pokenae.Commons.Domain.Services;
 
-namespace pokenae.Commons.Services.Domain.impl
+namespace pokenae.Commons.Domain.Services.impl
 {
     /// <summary>
     /// エンティティに対する基本的な操作を提供するサービスクラス
@@ -17,10 +16,10 @@ namespace pokenae.Commons.Services.Domain.impl
             where TEntity : BaseEntity
             where TDto : InfrastructureDto
     {
-        protected readonly IEntityRepository<TDto> repository;
+        protected readonly IBaseRepository<TDto> repository;
         protected readonly IMapper mapper;
 
-        public EntityService(IEntityRepository<TDto> repository, IMapper mapper)
+        public EntityService(IBaseRepository<TDto> repository, IMapper mapper)
         {
             this.repository = repository;
             this.mapper = mapper;

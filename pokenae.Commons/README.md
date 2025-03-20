@@ -4,6 +4,44 @@
 
 `pokenae.Commons`プロジェクトは、共通のサービス、リポジトリ、エンティティ、DTO、マッピングプロファイル、データベースコンテキスト、フィルタなどを提供します。このプロジェクトは、他のプロジェクトで再利用可能な汎用的な機能を提供することを目的としています。
 
+本プロジェクトはプレゼンテーション層、アプリケーション層、ドメイン層、インフラストラクチャ層の4層で構成されるポケなえのプロジェクトを支援するものです。
+
+## 各層の責務
+
+### プレゼンテーション層
+
+- ユーザーインターフェースを提供し、ユーザーからの入力を受け付けます。
+- アプリケーション層のDTOを使用してデータを表示します。
+
+### アプリケーション層
+
+- ビジネスロジックを実行し、プレゼンテーション層とドメイン層の間のデータの移動を管理します。
+- アプリケーション層のDTOは、アプリケーション層からプレゼンテーション層へのデータの移動を行い、`ApplicationDto`を継承します。
+
+### ドメイン層
+
+- ビジネスルールとビジネスロジックを実現します。
+- ドメイン層のエンティティは`BaseEntity`を継承します。
+- ドメイン層のValueObjectは`BaseValueObject`を継承します。
+- ドメイン層のサービスはビジネスルール、ビジネスロジックを実現するためのメインのサービスとリポジトリと1:1で存在するinternalなサブサービスで構成され、サブサービスのインターフェースは`IEntityService`を実装し、その実装は`EntityService`を継承します。
+- ドメイン層のDTOはインフラストラクチャ層からドメイン層へのデータの移動を行い、`InfrastructureDto`を継承します。
+- ドメイン層のリポジトリはDBテーブルなどと1:1で存在し、`IEntityRepository`を実装します。
+
+### インフラストラクチャ層
+
+- データベースや外部サービスとの通信を管理します。
+- インフラストラクチャ層の`DbContext`は`ApplicationDbContext`を継承します。
+- インフラストラクチャ層のリポジトリの実装は`EntityRepository`を継承します。
+
+## マッピング
+
+- 各DTOとエンティティのマッピングを行うmapperは`BaseMappingProfile`を継承します。
+
+## フィルタ
+
+- `pokenae-UserManager(pUM)`を用いた権限管理を行う場合は`ApiAccessFilter`を有効にします。
+- `pUM`を用いてアクセスログ管理を行う場合は`LoggingActionFilter`を有効にします。
+
 ## 参照方法
 
 以下の手順に従って、`pokenae.Commons`プロジェクトを他のプロジェクトで参照し、利用することができます。
@@ -18,192 +56,9 @@
 3. **名前空間のインポート**:
    - `pokenae.Commons`プロジェクトのクラスやインターフェースを使用するために、必要な名前空間をインポートします。例えば、以下のようにインポートします。
 
-   using pokenae.Commons.Filters;
-   using pokenae.Commons.Data;
-   using pokenae.Commons.DTOs;
-   using pokenae.Commons.Entities;
-   using pokenae.Commons.Mappings;
-   using pokenae.Commons.Repositories;
-   using pokenae.Commons.Repositories.impl;
-   using pokenae.Commons.Services.Application;
-   using pokenae.Commons.Services.Application.impl;
+	- using pokenae.Commons.Filters; using pokenae.Commons.Data; using pokenae.Commons.DTOs; using pokenae.Commons.Entities; using pokenae.Commons.Mappings; using pokenae.Commons.Repositories; using pokenae.Commons.Repositories.impl; using pokenae.Commons.Services.Application; using pokenae.Commons.Services.Application.impl;
 
-
-## 使用目的と意図
-
-### `pokenae.Commons.Filters.LoggingActionFilter`
-
-`LoggingActionFilter`は、APIアクセスのログ記録を行うフィルタです。各アクションの実行前後にログを記録し、エラーハンドリングも行います。
-
-### `pokenae.Commons.Filters.ApiAccessFilter`
-
-`ApiAccessFilter`は、ポケなえが管理するAPIに対してアクセス権限をチェックするフィルタです。特定のAPIエンドポイントにアクセスする前に、アクセス権限を確認します。
-
-### `pokenae.Commons.Data.ApplicationDbContext`
-
-`ApplicationDbContext`は、データベースコンテキストクラスです。エンティティの保存、更新、削除などのデータベース操作を管理します。
-
-### `pokenae.Commons.DTOs.BaseDto`
-
-`BaseDto`は、データ転送オブジェクトの基底クラスです。エンティティのデータを転送するための共通プロパティを提供します。
-
-### `pokenae.Commons.Entities.BaseEntity`
-
-`BaseEntity`は、エンティティの基底クラスです。作成者、作成日時、更新者、更新日時、削除者、削除日時などの共通プロパティを提供します。
-
-### `pokenae.Commons.Mappings.BaseMappingProfile`
-
-`BaseMappingProfile`は、AutoMapperのマッピングプロファイルの基底クラスです。エンティティとDTOのマッピング設定を行います。
-
-### `pokenae.Commons.Repositories.IEntityRepository`
-
-`IEntityRepository`は、エンティティのリポジトリインターフェースです。エンティティのCRUD操作を定義します。
-
-### `pokenae.Commons.Repositories.impl.EntityRepository`
-
-`EntityRepository`は、`IEntityRepository`の実装クラスです。エンティティのCRUD操作を実装します。
-
-### `pokenae.Commons.Services.Application.IApplicationService`
-
-`IApplicationService`は、アプリケーションサービスのインターフェースです。DTOを使用したビジネスロジックを定義します。
-
-### `pokenae.Commons.Services.Application.impl.ApplicationService`
-
-`ApplicationService`は、`IApplicationService`の実装クラスです。DTOを使用したビジネスロジックを実装します。
-
-## 実際の使用例
-
-### `LoggingActionFilter`の使用例
-
-`LoggingActionFilter`をASP.NET Coreのフィルタとして使用する例を示します。
-
-public void ConfigureServices(IServiceCollection services) { services.AddHttpClient(); services.AddScoped<LoggingActionFilter>(); 
-services.AddControllers(options => 
-{ 
-    options.Filters.Add<LoggingActionFilter>(); 
-}); }
-
-### `ApiAccessFilter`の使用例
-
-`ApiAccessFilter`をASP.NET Coreのフィルタとして使用する例を示します。
-
-public void ConfigureServices(IServiceCollection services) { services.AddHttpClient(); services.AddScoped<ApiAccessFilter>();
-services.AddControllers(options =>
-{
-    options.Filters.Add<ApiAccessFilter>();
-});
-}
-
-### `ApplicationDbContext`の使用例
-
-`ApplicationDbContext`を設定し、依存性注入する例を示します。
-
-public void ConfigureServices(IServiceCollection services) { services.AddDbContext<ApplicationDbContext<YourDbContext>>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-services.AddHttpContextAccessor();
-}
-
-### `EntityRepository`の使用例
-
-`EntityRepository`を使用してエンティティのCRUD操作を行う例を示します。
-
-public class YourService { private readonly IEntityRepository<YourEntity> _repository;
-public YourService(IEntityRepository<YourEntity> repository)
-{
-    _repository = repository;
-}
-
-public void AddEntity(YourDto dto)
-{
-    var entity = new YourEntity
-    {
-        // DTOからエンティティへのマッピング
-    };
-    _repository.Add(entity);
-}
-
-public YourDto GetEntity(Guid id)
-{
-    var entity = _repository.Find(e => e.Id == id);
-    return new YourDto
-    {
-        // エンティティからDTOへのマッピング
-    };
-}
-}
-
-
-## 拡張方法
-
-### `IEntityRepository`の拡張
-
-`IEntityRepository`を拡張するには、新しいメソッドをインターフェースに追加します。
-
-
-public interface IEntityRepository<T> where T : BaseEntity 
-{ 
-    // 既存のメソッド
-    // 新しいメソッド
-    Task<T> FindAsync(Func<T, bool> predicate);
-}
-
-
-### `EntityRepository`の拡張
-
-`EntityRepository`を拡張するには、`IEntityRepository`で定義した新しいメソッドを実装します。
-
-
-public class EntityRepository<T> : IEntityRepository<T> where T : BaseEntity 
-{ 
-    // 既存のメソッド
-    public async Task<T> FindAsync(Func<T, bool> predicate)
-    {
-        return await Task.Run(() => _context.Set<T>().FirstOrDefault(predicate));
-    }
-}
-
-
-### `IEntityService`の拡張
-
-`IEntityService`を拡張するには、新しいメソッドをインターフェースに追加します。
-
-
-public interface IEntityService<T> where T : BaseEntity 
-{ 
-    // 既存のメソッド
-    // 新しいメソッド
-    Task<T> FindAsync(Func<T, bool> predicate);
-}
-
-
-### `EntityService`の拡張
-
-`EntityService`を拡張するには、`IEntityService`で定義した新しいメソッドを実装します。
-
-
-public class EntityService<T> : IEntityService<T> where T : BaseEntity 
-{ 
-    // 既存のメソッド
-    public async Task<T> FindAsync(Func<T, bool> predicate)
-    {
-        return await repository.FindAsync(predicate);
-    }
-}
-
-
-### `BaseMappingProfile`の拡張
-
-`BaseMappingProfile`を拡張するには、新しいマッピング設定を追加します。
-
-
-public class CustomMappingProfile : BaseMappingProfile 
-{ 
-    public CustomMappingProfile() 
-    { 
-        CreateMap<YourEntity, YourDto>(); CreateMap<YourDto, YourEntity>(); 
-    } 
-}
-
-
+	
 ## まとめ
 
 `pokenae.Commons`プロジェクトは、共通の機能を提供することで、他のプロジェクトでのコードの再利用性を高め、開発効率を向上させることを目的としています。各クラスやインターフェースを適切に参照し、利用することで、共通のビジネスロジックやデータ操作を簡単に実装することができます。

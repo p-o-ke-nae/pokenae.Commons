@@ -1,9 +1,9 @@
 using System;
 
-namespace pokenae.Commons.DTOs.Application
+namespace pokenae.Commons.Application.DTOs
 {
     /// <summary>
-    /// データ転送オブジェクトのベースクラス
+    /// アプリケーション層からプレゼンテーション層にデータを転送するDTOの基底クラス
     /// </summary>
     public abstract class ApplicationDto
     {
@@ -23,7 +23,6 @@ namespace pokenae.Commons.DTOs.Application
         public DateTime UpdatedAt { get; set; }
 
         /// <summary>
-        /// コンストラクタ
         /// 新しいインスタンスを初期化します
         /// </summary>
         protected ApplicationDto()
@@ -41,7 +40,7 @@ namespace pokenae.Commons.DTOs.Application
         {
             if (Id == Guid.Empty)
             {
-                throw new ArgumentException("Id cannot be empty.");
+                throw new ArgumentException("Id cannot be empty");
             }
         }
     }

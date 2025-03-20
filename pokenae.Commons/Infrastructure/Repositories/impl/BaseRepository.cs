@@ -1,18 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using pokenae.Commons.Data;
-using pokenae.Commons.DTOs;
+using pokenae.Commons.Domain.DTOs;
+using pokenae.Commons.Domain.Repositories;
+using pokenae.Commons.Infrastructure.Data;
 
-namespace pokenae.Commons.Repositories.impl
+namespace pokenae.Commons.Infrastructure.Repositories.impl
 {
     /// <summary>
     /// DBテーブルを使用する運営で使用する共通のリポジトリクラス
     /// </summary>
-    /// <typeparam name="T">エンティティの型</typeparam>
-    public class EntityRepository<T, TContext> : IEntityRepository<T> 
+    /// <typeparam name="T">インフラストラクチャ層のDTOの型</typeparam>
+    public class BaseRepository<T, TContext> : IBaseRepository<T> 
         where T : InfrastructureDto
         where TContext : DbContext
     {
@@ -23,7 +21,7 @@ namespace pokenae.Commons.Repositories.impl
         /// コンストラクタ
         /// </summary>
         /// <param name="context">データベースコンテキスト</param>
-        public EntityRepository(ApplicationDbContext<TContext> context)
+        public BaseRepository(ApplicationDbContext<TContext> context)
         {
             this.context = context;
         }

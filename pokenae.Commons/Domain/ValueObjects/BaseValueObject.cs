@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace pokenae.Commons.ValueObjects
+namespace pokenae.Commons.Domain.ValueObjects
 {
     /// <summary>
     /// 値オブジェクトの基底クラス
     /// </summary>
-    public abstract class ValueObject
+    public abstract class BaseValueObject
     {
         /// <summary>
         /// 等価性を判断するためのコンポーネントを取得します。
@@ -25,7 +25,7 @@ namespace pokenae.Commons.ValueObjects
             if (obj == null || obj.GetType() != GetType())
                 return false;
 
-            var other = (ValueObject)obj;
+            var other = (BaseValueObject)obj;
             return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
         }
 
