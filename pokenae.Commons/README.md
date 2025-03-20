@@ -58,7 +58,56 @@
 
 	- using pokenae.Commons.Filters; using pokenae.Commons.Data; using pokenae.Commons.DTOs; using pokenae.Commons.Entities; using pokenae.Commons.Mappings; using pokenae.Commons.Repositories; using pokenae.Commons.Repositories.impl; using pokenae.Commons.Services.Application; using pokenae.Commons.Services.Application.impl;
 
-	
+## 命名規約
+
+### ドメイン層のDTO、リポジトリ、リポジトリと1:1の関係にあるサブサービス
+
+- **マスタテーブル**:
+  - **接頭語**: `M1`
+  - **例**: `M1CustomerRepository`, `M1ProductRepository`, `M1CustomerDto`, `M1CustomerService`
+
+- **トランザクションテーブル**:
+  - **接頭語**: `T1`
+  - **例**: `T1OrderRepository`, `T1InvoiceRepository`, `T1OrderDto`, `T1OrderService`
+
+- **ログテーブル**:
+  - **接頭語**: `L1`
+  - **例**: `L1ErrorLogRepository`, `L1AccessLogRepository`, `L1ErrorLogDto`, `L1ErrorLogService`
+
+- **設定テーブル**:
+  - **接頭語**: `C1`（Configurationの略）
+  - **例**: `C1AppSettingsRepository`, `C1UserSettingsRepository`, `C1AppSettingsDto`, `C1AppSettingsService`
+
+- **参照テーブル**:
+  - **接頭語**: `R1`（Referenceの略）
+  - **例**: `R1CountryRepository`, `R1CurrencyRepository`, `R1CountryDto`, `R1CountryService`
+
+- **履歴テーブル**:
+  - **接頭語**: `H1`（Historyの略）
+  - **例**: `H1OrderHistoryRepository`, `H1LoginHistoryRepository`, `H1OrderHistoryDto`, `H1OrderHistoryService`
+
+- **一時テーブル**:
+  - **接頭語**: `T2`（Temporaryの略）
+  - **例**: `T2TempDataRepository`, `T2SessionDataRepository`, `T2TempDataDto`, `T2TempDataService`
+
+- **キュー**:
+  - **接頭語**: `Q1`（Queueの略）
+  - **例**: `Q1MessageQueueRepository`, `Q1TaskQueueRepository`, `Q1MessageQueueDto`, `Q1MessageQueueService`
+
+- **外部API**:
+  - **接頭語**: `E1`（Externalの略）
+  - **例**: `E1GoogleApiRepository`, `E1TwitterApiRepository`, `E1GoogleApiDto`, `E1GoogleApiService`
+
+### サービスの命名規約
+
+- **ドメイン層のサービス**:
+  - **接尾語**: `Service`
+  - **例**: `CustomerService`, `OrderService`
+
+- **アプリケーション層のサービス**:
+  - **接尾語**: `UseCase`
+  - **例**: `CreateOrderUseCase`, `GetCustomerDetailsUseCase`
+
 ## まとめ
 
 `pokenae.Commons`プロジェクトは、共通の機能を提供することで、他のプロジェクトでのコードの再利用性を高め、開発効率を向上させることを目的としています。各クラスやインターフェースを適切に参照し、利用することで、共通のビジネスロジックやデータ操作を簡単に実装することができます。
