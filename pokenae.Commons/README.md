@@ -25,13 +25,13 @@
 - ドメイン層のValueObjectは`BaseValueObject`を継承します。
 - ドメイン層のサービスはビジネスルール、ビジネスロジックを実現するためのメインのサービスとリポジトリと1:1で存在するinternalなサブサービスで構成され、サブサービスのインターフェースは`IEntityService`を実装し、その実装は`EntityService`を継承します。
 - ドメイン層のDTOはインフラストラクチャ層からドメイン層へのデータの移動を行い、`InfrastructureDto`を継承します。
-- ドメイン層のリポジトリはDBテーブルなどと1:1で存在し、`IEntityRepository`を実装します。
+- ドメイン層のリポジトリはDBテーブルなどと1:1で存在し、`IBaseRepository`を実装します。
 
 ### インフラストラクチャ層
 
 - データベースや外部サービスとの通信を管理します。
 - インフラストラクチャ層の`DbContext`は`ApplicationDbContext`を継承します。
-- インフラストラクチャ層のリポジトリの実装は`EntityRepository`を継承します。
+- インフラストラクチャ層のリポジトリの実装は`BaseRepository`を継承します。
 
 ## マッピング
 
