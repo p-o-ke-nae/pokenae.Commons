@@ -1,13 +1,14 @@
+using pokenae.Commons.Domain.DTOs;
 using pokenae.Commons.Domain.Entities;
 
 namespace pokenae.Commons.Domain.Services
 {
     /// <summary>
-    /// エンティティに対する基本的な操作を提供するサービスインターフェース
+    /// リポジトリに対する基本的な操作を提供するサービスインターフェース
     /// </summary>
-    /// <typeparam name="T">エンティティの型</typeparam>
-    public interface IEntityService<T>
-        where T : BaseEntity
+    /// <typeparam name="T">ドメイン層のDTOの型</typeparam>
+    public interface IRepositoryService<T>
+        where T : InfrastructureDto
     {
         /// <summary>
         /// 指定された条件に一致するエンティティを取得します。
