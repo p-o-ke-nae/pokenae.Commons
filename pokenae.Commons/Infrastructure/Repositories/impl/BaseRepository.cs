@@ -14,14 +14,14 @@ namespace pokenae.Commons.Infrastructure.Repositories.impl
         where T : InfrastructureDto
         where TContext : DbContext
     {
-        protected readonly TContext context;
+        protected readonly ApplicationDbContext<TContext> context;
         private IDbContextTransaction _transaction;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="context">データベースコンテキスト</param>
-        public BaseRepository(TContext context)
+        public BaseRepository(ApplicationDbContext<TContext> context)
         {
             this.context = context;
         }

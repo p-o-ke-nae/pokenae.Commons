@@ -15,12 +15,10 @@ namespace pokenae.Commons.Domain.Services.impl
         where T : InfrastructureDto
     {
         protected readonly IBaseRepository<T> repository;
-        protected readonly IMapper mapper;
 
-        public RepositoryService(IBaseRepository<T> repository, IMapper mapper)
+        public RepositoryService(IBaseRepository<T> repository)
         {
             this.repository = repository;
-            this.mapper = mapper;
         }
 
         public T Find(Func<T, bool> predicate)
